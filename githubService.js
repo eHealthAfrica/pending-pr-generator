@@ -1,8 +1,5 @@
 var github = require('octonode');
 
-// var client = github.client('08560db26b7b85f2d37487406f8a7efbab39b727');
-
-
 async function getPullRequests(repository,token) {
     const client = github.client(token)
     const repo = client.repo(`ehealthAfrica/${repository}`)
@@ -11,7 +8,7 @@ async function getPullRequests(repository,token) {
         project: repository,
         pr_link: pull.html_url,
         opened_by: pull.user.login,
-        reviewers: pull.requested_reviewers.map(rev => rev.login),
+        reviewers: pull.requested_reviewers.map(rev => rev.login).join(','),
         created_at: (pull.created_at.split('T')[0])
     }));
 }
