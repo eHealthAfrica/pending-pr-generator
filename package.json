@@ -1,5 +1,22 @@
 {
+  "name": "eHA-PR-Reviews",
+  "version": "1.0.0",
+  "description": "Single point of assessing pr statuses",
+  "main": "index.js",
+  "repository": "git@github.com:eHealthAfrica/pending-pr-generator.git",
+  "author": "ambat25 <25ambat25@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "test": "mocha tests/**/*test.js",
+    "dev": "node index.js"
+  },
   "dependencies": {
+    "chai": "^4.2.0",
+    "googleapis": "^34.0.0",
+    "jest": "^23.6.0",
+    "mocha": "^5.2.0",
+    "moment": "^2.22.2",
     "octonode": "^0.9.5"
   }
 }
