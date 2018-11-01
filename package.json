@@ -9,7 +9,9 @@
   "private": true,
   "scripts": {
     "test": "mocha tests/**/*test.js",
-    "dev": "node index.js"
+    "dev": "node index.js",
+    "lint": "eslint classes tests index.js",
+    "lint-fix": "eslint classes tests index.js --fix"
   },
   "dependencies": {
     "chai": "^4.2.0",
@@ -18,5 +20,17 @@
     "mocha": "^5.2.0",
     "moment": "^2.22.2",
     "octonode": "^0.9.5"
+  },
+  "devDependencies": {
+    "eslint": "^5.8.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.14.0",
+    "husky": "^1.1.2"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint",
+      "pre-push": "npm test"
+    }
   }
 }
