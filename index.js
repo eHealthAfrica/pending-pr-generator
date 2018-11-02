@@ -12,7 +12,8 @@ const {
 
 async function main() {
   const objGoogleAuthentication = new google.auth.JWT(
-    sheetAuth.client_email, null,
+    sheetAuth.client_email,
+    null,
     sheetAuth.private_key,
     'https://www.googleapis.com/auth/spreadsheets',
   );
@@ -23,10 +24,7 @@ async function main() {
     sheetId,
   );
   const getPullRequests = await githubService.getRepositories();
-
-  Promise.all(getPullRequests).then((arrPullRequests) => {
-    googleSheetService.postPullRequests(arrPullRequests);
-  });
+  await googleSheetService.postPullRequests(getPullRequests);
 }
 
 main();

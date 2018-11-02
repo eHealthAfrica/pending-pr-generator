@@ -1,27 +1,28 @@
-
-
 class GoogleSheetService {
-  constructor(sheets, userAuth, strSpreadsheetId) {
+  constructor(objSheets, objUserAuth, strSpreadsheetId) {
     this.strSpreadsheetId = strSpreadsheetId;
-    this.arrFormattedPullRequests = '';
-    this.sheets = sheets;
-    this.userAuth = userAuth;
+    this.arrFormattedPullRequests = null;
+    this.objSheets = objSheets;
+    this.objUserAuth = objUserAuth;
   }
 
   postPullRequests(arrPullRequests) {
+    this.formatPullRequests(arrPullRequests);
+    this.updateSheet();
+  }
+
+  formatPullRequests(arrPullRequests) {
     this.arrFormattedPullRequests = arrPullRequests.map(pullRequest => Object.values(pullRequest));
     this.arrFormattedPullRequests = [
       ['Project', 'Date Opened', 'Opened By', 'Reviewers', 'Reviews', 'Pr-Link'],
       ...this.arrFormattedPullRequests,
     ];
-    const auth = this.userAuth;
-    this.updateSheet(auth);
   }
 
-  updateSheet(auth) {
-    const sheets = this.sheets({
+  updateSheet() {
+    const sheets = this.objSheets({
       version: 'v4',
-      auth,
+      auth: this.objUserAuth,
     });
 
     const request = {
@@ -32,8 +33,10 @@ class GoogleSheetService {
         values: this.arrFormattedPullRequests,
       },
     };
-    sheets.spreadsheets.values.update(request, (err, res) => {
-      err ? console.error('error posting to sheet') : console.log('Posted to the sheet');
+    sheets.spreadsheets.values.update(request, (err) => {
+      if (err) {
+        throw new Error('problem posting to sheet');
+      }
     });
   }
 }

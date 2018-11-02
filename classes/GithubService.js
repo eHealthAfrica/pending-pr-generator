@@ -1,45 +1,74 @@
-
-
 class GithubService {
-  constructor(github, arrRepoNames, token, moment, accountName = 'ehealthAfrica') {
-    this.github = github;
+  constructor(objGithubClient, arrRepoNames, token, moment, strAccountName = 'ehealthAfrica') {
+    this.objGithubClient = objGithubClient;
     this.arrRepoNames = arrRepoNames;
     this.token = token;
     this.moment = moment;
-    this.accountName = accountName;
-    this.objGithub = this.github.client(this.token);
+    this.strAccountName = strAccountName;
+    this.objGithub = this.objGithubClient.client(this.token);
     this.TIME_ZONE = '+01:00';
     this.DATE_TIME_FORMAT = 'YYYY-MM-DDTHH:mm:ss.sssZ';
   }
 
   async getRepositories() {
-    let numIndex = 0;
-    let arrRepositories = [];
-    while (numIndex < this.arrRepoNames.length) {
-      const arrPullRequests = await this.getPullRequests(this.arrRepoNames[numIndex]);
-      if (arrPullRequests) arrRepositories = [...arrRepositories, ...arrPullRequests];
-      numIndex++;
-    }
-    return arrRepositories;
+    const arrPullRequests = await this.getUnfilteredRepositories();
+    return Promise.all(arrPullRequests).then((arrPrs) => {
+      const arrFilteredPullRequests = arrPrs.filter(pr => pr.length);
+      let arrSpreadedPullRequests = [];
+
+      arrFilteredPullRequests.forEach((arrPullRequest) => {
+        arrSpreadedPullRequests = [...arrSpreadedPullRequests, ...arrPullRequest];
+      });
+
+      return arrSpreadedPullRequests;
+    }).catch(error => new Error(error));
   }
 
-  async getPullRequests(strRepoName) {
-    const objRepo = this.objGithub.repo(`${this.accountName}/${strRepoName}`);
+  getUnfilteredRepositories() {
+    let numIndex = 0;
+    const arrRepositories = [];
+    while (numIndex < this.arrRepoNames.length) {
+      arrRepositories.push(this.fetchPullRequests(this.arrRepoNames[numIndex]));
+      numIndex += 1;
+    }
+    return Promise.all(arrRepositories);
+  }
+
+  async fetchPullRequests(strRepoName) {
+    const objRepo = this.objGithub.repo(`${this.strAccountName}/${strRepoName}`);
     const arrPullRequests = await objRepo.prsAsync();
-    if (!arrPullRequests[0].length) return;
-    return arrPullRequests[0].map(async objPullRequest => this.getReviewDetails(strRepoName, objPullRequest));
+    return this.getPullRequests(strRepoName, arrPullRequests);
+  }
+
+  getPullRequests(strRepoName, arrPullRequests) {
+    try {
+      const temp = [];
+      let numIndex = 0;
+      if (!arrPullRequests[0].length) return {};
+      while (numIndex < arrPullRequests[0].length) {
+        temp.push(this.getReviewDetails(strRepoName, arrPullRequests[0][numIndex]));
+        numIndex += 1;
+      }
+      return Promise.all(temp);
+    } catch (error) {
+      return {};
+    }
   }
 
   async getReviewDetails(strRepoName, objPullRequest) {
-    const objGithubPullRequest = await this.objGithub.pr(`${this.accountName}/${strRepoName}`, objPullRequest.number);
-    const objReviews = await objGithubPullRequest.reviewsAsync();
-    const objAllReviews = this.getReviews(objReviews, objPullRequest);
-    return this.getPullRequest(strRepoName, objPullRequest, objAllReviews);
+    try {
+      const objGithubPullRequest = await this.objGithub.pr(`${this.strAccountName}/${strRepoName}`, objPullRequest.number);
+      const objReviews = await objGithubPullRequest.reviewsAsync();
+      const objAllReviews = this.getReviews(objReviews, objPullRequest);
+      return this.constructor.getPullRequest(strRepoName, objPullRequest, objAllReviews);
+    } catch (error) {
+      return {};
+    }
   }
 
   getReviews(objReviews, objPullRequest) {
     let objAllReviews = '';
-    if (objReviews[0].length) {
+    if (objReviews[0] && objReviews[0].length) {
       objReviews[0].forEach((objReview) => {
         objAllReviews += this.formatReview(objReview, objPullRequest);
       });
@@ -47,7 +76,7 @@ class GithubService {
     return objAllReviews;
   }
 
-  getPullRequest(strRepoName, objPullRequest, objAllReviews) {
+  static getPullRequest(strRepoName, objPullRequest, objAllReviews) {
     return {
       project: strRepoName,
       created_at: (objPullRequest.created_at.split('T')[0]),
@@ -65,7 +94,8 @@ class GithubService {
   }
 
   time(timeOpened, timeReviewed) {
-    const prOpen = this.moment(timeOpened, this.DATE_TIME_FORMAT).utcOffset(this.TIME_ZONE);
+    const prOpen = this.moment(new Date().toISOString(), this.DATE_TIME_FORMAT)
+      .utcOffset(this.TIME_ZONE);
     const prTouch = this.moment(timeReviewed, this.DATE_TIME_FORMAT).utcOffset(this.TIME_ZONE);
     const reviewDuration = prOpen.diff(prTouch, 'minutes');
     const prResult = `${this.moment.duration(reviewDuration, 'minutes').humanize()} ago`;
