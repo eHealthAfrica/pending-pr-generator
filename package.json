@@ -16,10 +16,10 @@
   "dependencies": {
     "chai": "^4.2.0",
     "googleapis": "^34.0.0",
-    "jest": "^23.6.0",
     "mocha": "^5.2.0",
     "moment": "^2.22.2",
-    "octonode": "^0.9.5"
+    "octonode": "^0.9.5",
+    "sinon": "^7.1.1"
   },
   "devDependencies": {
     "eslint": "^5.8.0",
