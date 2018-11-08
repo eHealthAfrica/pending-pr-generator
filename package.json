@@ -1,5 +1,36 @@
 {
+  "name": "eHA-PR-Reviews",
+  "version": "1.0.0",
+  "description": "Single point of assessing pr statuses",
+  "main": "index.js",
+  "repository": "git@github.com:eHealthAfrica/pending-pr-generator.git",
+  "author": "ambat25 <25ambat25@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "test": "mocha tests/**/*test.js",
+    "dev": "node index.js",
+    "lint": "eslint classes tests index.js",
+    "lint-fix": "eslint classes tests index.js --fix"
+  },
   "dependencies": {
-    "octonode": "^0.9.5"
+    "chai": "^4.2.0",
+    "googleapis": "^34.0.0",
+    "mocha": "^5.2.0",
+    "moment": "^2.22.2",
+    "octonode": "^0.9.5",
+    "sinon": "^7.1.1"
+  },
+  "devDependencies": {
+    "eslint": "^5.8.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.14.0",
+    "husky": "^1.1.2"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint",
+      "pre-push": "npm test"
+    }
   }
 }
