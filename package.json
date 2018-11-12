@@ -14,7 +14,9 @@
     "lint-fix": "eslint classes tests index.js --fix"
   },
   "dependencies": {
+    "async": "^2.6.1",
     "chai": "^4.2.0",
+    "google-spreadsheet": "^2.0.6",
     "googleapis": "^34.0.0",
     "mocha": "^5.2.0",
     "moment": "^2.22.2",
