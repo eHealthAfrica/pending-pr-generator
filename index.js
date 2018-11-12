@@ -3,6 +3,7 @@ const github = require('octonode');
 const { google } = require('googleapis');
 const GithubService = require('./classes/GithubService');
 const GoogleSheetService = require('./classes/GoogleSheetService');
+const processSheet = require('./ProcessSheet');
 const {
   repos,
   githubToken,
@@ -10,7 +11,9 @@ const {
   sheetId,
 } = require('./config.json');
 
+
 async function main() {
+  await processSheet(sheetId, sheetAuth);
   const objGoogleAuthentication = new google.auth.JWT(
     sheetAuth.client_email,
     null,
