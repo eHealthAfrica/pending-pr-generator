@@ -27,8 +27,8 @@ class GoogleSheetService {
 
     const request = {
       spreadsheetId: this.strSpreadsheetId,
-      range: 'Sheet4!A1:G',
-      valueInputOption: 'RAW',
+      range: `Active - ${new Date().toISOString().split('T')[0]}!A1:G`,
+      valueInputOption: 'USER_ENTERED',
       resource: {
         values: this.arrFormattedPullRequests,
       },
