@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "async": "^2.6.1",
+    "bluebird": "^3.5.3",
     "chai": "^4.2.0",
     "google-spreadsheet": "^2.0.6",
     "googleapis": "^34.0.0",
