@@ -22,7 +22,8 @@
     "mocha": "^5.2.0",
     "moment": "^2.22.2",
     "octonode": "^0.9.5",
-    "sinon": "^7.1.1"
+    "sinon": "^7.1.1",
+    "slackbots": "^1.2.0"
   },
   "devDependencies": {
     "eslint": "^5.8.0",
