@@ -5,6 +5,8 @@
     "sheetAuth": {
         "private_key": "",
         "client_email": ""
-    }
-
+    },
+    "slackToken": "",
+    "slackName": "",
+    "slackChannel": ""
 }
