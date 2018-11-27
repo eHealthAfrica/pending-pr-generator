@@ -1,5 +1,6 @@
 const moment = require('moment');
 const Promise = require('bluebird');
+const SlackBot = require('slackbots');
 const github = require('octonode');
 const {
   google,
@@ -12,6 +13,9 @@ const {
   githubToken,
   sheetAuth,
   sheetId,
+  slackToken,
+  slackName,
+  slackChannel,
 } = require('./config.json');
 
 async function main() {
@@ -29,9 +33,16 @@ async function main() {
     google.sheets, objGoogleAuthentication, sheetId, doc, sheetAuth,
   );
   // Returns the GID
-  await googleSheetService.makeSheet();
+  const newSheet = await googleSheetService.makeSheet();
   const getPullRequests = await githubService.getRepositories();
   await googleSheetService.postPullRequests(getPullRequests);
+
+  const bot = new SlackBot({
+    token: slackToken,
+    name: slackName,
+  });
+  const message = `@here https://docs.google.com/spreadsheets/d/${sheetId}/edit#gid=${newSheet}`;
+  bot.postMessageToChannel(slackChannel, message);
 }
 
 main();
