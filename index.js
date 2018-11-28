@@ -40,6 +40,7 @@ async function main() {
   const bot = new SlackBot({
     token: slackToken,
     name: slackName,
+    disconnect: true,
   });
   const message = `@here https://docs.google.com/spreadsheets/d/${sheetId}/edit#gid=${newSheet}`;
   bot.postMessageToChannel(slackChannel, message);
