@@ -42,8 +42,12 @@ async function main() {
     name: slackName,
     disconnect: true,
   });
+  const params = {
+    slackbot: true,
+    link_names: 'true',
+  };
   const message = `@here https://docs.google.com/spreadsheets/d/${sheetId}/edit#gid=${newSheet}`;
-  bot.postMessageToChannel(slackChannel, message);
+  bot.postMessageToChannel(slackChannel, message, params);
 }
 
 main();
