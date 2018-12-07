@@ -14,12 +14,16 @@
     "lint-fix": "eslint classes tests index.js --fix"
   },
   "dependencies": {
+    "async": "^2.6.1",
+    "bluebird": "^3.5.3",
     "chai": "^4.2.0",
+    "google-spreadsheet": "^2.0.6",
     "googleapis": "^34.0.0",
     "mocha": "^5.2.0",
     "moment": "^2.22.2",
     "octonode": "^0.9.5",
-    "sinon": "^7.1.1"
+    "sinon": "^7.1.1",
+    "slackbots": "^1.2.0"
   },
   "devDependencies": {
     "eslint": "^5.8.0",
